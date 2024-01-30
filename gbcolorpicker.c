@@ -166,6 +166,9 @@ void print_date()
 
 void main()
 {
+    // SRAM is used to save the selected palette.
+    static palette_color_t * const sram = (palette_color_t *)_SRAM;
+
     static uint8_t sgb;
     static uint8_t sgb_pal01[] = {SGB_PAL_01 << 3 | 1, 0xff,0x7f, 0xff,0x7f, 0xff,0x7f, 0,0,  0x1f,0, 0xff,0x7f, 0,0, 0};
     static uint8_t sgb_pal23[] = {SGB_PAL_23 << 3 | 1, 0xff,0x7f, 0xe0,0x03, 0xff,0x7f, 0,0,  0,0x7c, 0xff,0x7f, 0,0, 0};
@@ -237,6 +240,28 @@ void main()
         set_bkg_palette_entry(i, 3, RGB_BLACK);
     }
 
+    // Check whether SRAM is valid
+    ENABLE_RAM;
+    if (sram[0] != 0xffff) {
+        // If so load the intial palette from the save.
+        for (i = 0; i < 4; i++) {
+             raw_colors[i] = sram[i];
+             colors[i][0] = raw_colors[i] & UINT5_MAX;
+             colors[i][1] = (raw_colors[i] >> 5) & UINT5_MAX;
+             colors[i][2] = (raw_colors[i] >> 10) & UINT5_MAX;
+        }
+        // Init the SGB palette packets.
+        sgb_pal01[3] = raw_colors[0] & 0xff;
+        sgb_pal01[4] = (raw_colors[0] >> 8) & 0xff;
+        sgb_pal01[9] = raw_colors[1] & 0xff;
+        sgb_pal01[10] = (raw_colors[1] >> 8) & 0xff;
+        sgb_pal23[3] = raw_colors[2] & 0xff;
+        sgb_pal23[4] = (raw_colors[2] >> 8) & 0xff;
+        sgb_pal23[9] = raw_colors[3] & 0xff;
+        sgb_pal23[10] = (raw_colors[3] >> 8) & 0xff;
+    }
+    DISABLE_RAM;
+
     // Display title and usage
     puts("\n  GB Color Picker\n  ---------------\n\n Use left/right to\n choose a component\n and up/down to\n change it.\n\n Select switches\n between hex and\n decimal colors.\n\n Press any button\n to continue.");
     print_date();
@@ -299,6 +324,13 @@ void main()
         }
 
         if (color_changed) {
+            // Save the colors to SRAM so the .sav file can be used to import a palette.
+            ENABLE_RAM;
+            for (i = 0; i < 4; i++) {
+                sram[i] = raw_colors[i];
+            }
+            DISABLE_RAM;
+            // Change the display palette onscreen.
             if (sgb) {
                 switch (selected_color) {
                     case 0:

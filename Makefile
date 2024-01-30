@@ -7,8 +7,13 @@ PROJECTNAME    = GBColorPicker
 # Compile options
 CC = $(GBDK_HOME)bin/lcc
 
-# Recommended setting, but does slow down compilation considerably.
-CFLAGS = -Wf--max-allocs-per-node50000
+# CLFAGS options:
+# -yt3: MBC1+RAM+BATTERY. MBC1 chosen for SRAM support and small size of SRAM (because only 8 bytes are needed).
+# -ya1: 8KiB of SRAM.
+# -yc: Game Boy Color support.
+# -ys: Super Game Boy support.
+# --max-allocs-per-node50000: Recommended setting, but does slow down compilation considerably.
+CFLAGS = -Wm-yt3 -Wm-ya1 -Wm-yc -Wm-ys -Wf--max-allocs-per-node50000
 
 BINS	    = $(PROJECTNAME).gb
 CSOURCES   := $(wildcard *.c)
@@ -19,7 +24,7 @@ all:	$(BINS)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(PROJECTNAME).gb:	gbcolorpicker.o
-	$(CC) $(CFLAGS) -Wm-yn"$(PROJECTNAME)" -Wm-yc -Wm-ys -o $@ $<
+	$(CC) $(CFLAGS) -Wm-yn"$(PROJECTNAME)" -o $@ $<
 
 clean:
 	rm -f *.o *.lst *.map *.gb *.ihx *.sym *.cdb *.adb *.asm
