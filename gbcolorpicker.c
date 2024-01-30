@@ -169,11 +169,14 @@ void main()
     // SRAM is used to save the selected palette.
     static palette_color_t * const sram = (palette_color_t *)_SRAM;
 
-    static uint8_t sgb;
+    // Running on Super Game Boy?
+    static bool sgb;
+
+    // Super Game Boy palette packets with hardcoded initial colors.
     static uint8_t sgb_pal01[] = {SGB_PAL_01 << 3 | 1, 0xff,0x7f, 0xff,0x7f, 0xff,0x7f, 0,0,  0x1f,0, 0xff,0x7f, 0,0, 0};
     static uint8_t sgb_pal23[] = {SGB_PAL_23 << 3 | 1, 0xff,0x7f, 0xe0,0x03, 0xff,0x7f, 0,0,  0,0x7c, 0xff,0x7f, 0,0, 0};
 
-    // Defines color rectangles for the four quadrants of the screen.
+    // Super Game Boy color rectangles for the four quadrants of the screen.
     static const uint8_t const sgb_attr_blk[] = {SGB_ATTR_BLK << 3 | 2, 3, 1,1, 10,0,19,8, 1,2, 0,9,9,17, 1,3,\
                                                   10,9,19,17, 0,0,0,0,0,0,0,0,0,0,0,0};
 
