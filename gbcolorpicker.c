@@ -161,7 +161,7 @@ inline void print_decimal(const uint8_t x, const uint8_t y, const uint8_t *p)
 void print_date()
 {
     gotoxy(5,16);
-    puts("2024-01-30");
+    puts("2024-02-06");
 }
 
 void main()
@@ -211,7 +211,11 @@ void main()
     static uint8_t i, j;
     static uint8_t *p;
 
+    // Display mode: HTML color code style hex digits or RGB decimal components.
     static uint8_t mode;
+
+    // Used to save/restore the selected value when pressing A or B.
+    static uint5_t backup_component;
 
     // Load a couple tiles so the top of numbers do not touch the colors
     set_bkg_data(TILE_ID_TOPNORMAL, 1, toptile);
@@ -266,7 +270,7 @@ void main()
     DISABLE_RAM;
 
     // Display title and usage
-    puts("\n  GB Color Picker\n  ---------------\n\n Use left/right to\n choose a component\n and up/down to\n change it.\n\n Select switches\n between hex and\n decimal colors.\n\n Press any button\n to continue.");
+    puts("\n  GB Color Picker\n  ---------------\n\n Use left/right to\n choose a component\n and up/down to\n change it.\n\n A and B toggle\n min, max and back.\n\n Select switches\n between hex and\n decimal colors.");
     print_date();
     do {
       wait(1);
@@ -296,6 +300,9 @@ void main()
 
     // Fill everything with the tile that will show the selected colors.
     fill_rect( 0, 0, 20, 18, TILE_ID_COLOR);
+
+    // Init the backup component.
+    backup_component = colors[selected_color][selected_component];
 
     // Main loop
     while(true) {
@@ -392,7 +399,6 @@ void main()
         do {
             wait(1);
             new_buttons = joypad();
-            new_buttons &= J_LEFT | J_RIGHT | J_UP | J_DOWN | J_SELECT; // Only D-pad and select are used
         } while (!(new_buttons || old_buttons));
 
         // D-pad is pressed. Update.
@@ -415,6 +421,9 @@ void main()
 
             // Highlight the new component
             show_hex_byte_xy_highlighted(loc_x[selected_color] + 3 * selected_component, loc_y[selected_color], colors[selected_color][selected_component]);
+
+            // Set the backup component.
+            backup_component = colors[selected_color][selected_component];
 
             // A slightly longer delay for switching components than changing a component
             wait(1);
@@ -439,6 +448,9 @@ void main()
             // Highlight the new component
             show_hex_byte_xy_highlighted(loc_x[selected_color] + 3 * selected_component, loc_y[selected_color], colors[selected_color][selected_component]);
 
+            // Set the backup component.
+            backup_component = colors[selected_color][selected_component];
+
             // A slightly longer delay for switching components than changing a component
             wait(1);
             break;
@@ -447,6 +459,8 @@ void main()
             // Increment the currently selected component if not already maxed
             if (colors[selected_color][selected_component] < UINT5_MAX) {
                 colors[selected_color][selected_component] += 1;
+                // Set the backup component.
+                backup_component = colors[selected_color][selected_component];
                 color_changed = true;
             }
             break;
@@ -455,8 +469,28 @@ void main()
             // Decrement the currently selected component if not already zero
             if (colors[selected_color][selected_component] > UINT5_MIN) {
                 colors[selected_color][selected_component] -= 1;
+                // Set the backup component.
+                backup_component = colors[selected_color][selected_component];
                 color_changed = true;
             }
+            break;
+
+            case J_A:
+            if (colors[selected_color][selected_component] == UINT5_MAX) {
+                colors[selected_color][selected_component] = backup_component;
+            } else {
+                colors[selected_color][selected_component] = UINT5_MAX;
+            }
+            color_changed = true;
+            break;
+
+            case J_B:
+            if (colors[selected_color][selected_component] == UINT5_MIN) {
+                colors[selected_color][selected_component] = backup_component;
+            } else {
+                colors[selected_color][selected_component] = UINT5_MIN;
+            }
+            color_changed = true;
             break;
 
             case J_SELECT:
