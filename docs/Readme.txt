@@ -12,10 +12,15 @@ The selected palette is saved to SRAM so your .sav file can be used by programs 
 
 Game Boy Color Picker is written in C and compiles with GBDK. Source code is available at https://github.com/xenophile127/GameBoyColorPicker
 
-What's new in this release (2024-01-30):
+Changes in 2024-02-06:
+* The A and B buttons now toggle maximum and minimum component values and back.
 
+Changes in 2024-01-30:
 * Press Select to show decimal RGB values.
 * Super Game Boy support.
 * Save the palette in the .sav file.
 
--xenophile 2024-01-30
+Changes in 2022-05-15:
+* Initial release.
+
+-xenophile 2024-02-06
