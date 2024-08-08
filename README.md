@@ -14,4 +14,4 @@ Controls are:
 
 The selected palette is saved to SRAM so your `GBColorPicker.sav` file can be used by programs that read binary GBC palettes.
 
-Game Boy Color Picker is written in C and compiles with GBDK.
+Game Boy Color Picker is written in C and compiles with [GBDK](https://gbdk-2020.github.io/gbdk-2020/).
