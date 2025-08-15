@@ -25,6 +25,28 @@ typedef uint8_t uint5_t;
 // Turns a five bit color value into an eight bit color value by repeating the three most significant bits in the three least.
 #define EXTEND(byte) ((byte) << 3) | ((byte) >> 2)
 
+// Set default colors
+uint5_t colors[4][3] = {
+    {UINT5_MAX, UINT5_MAX, UINT5_MAX}, // white
+    {UINT5_MAX, UINT5_MIN, UINT5_MIN}, // red
+    {UINT5_MIN, UINT5_MAX, UINT5_MIN}, // green
+    {UINT5_MIN, UINT5_MIN, UINT5_MAX}  // blue
+};
+
+palette_color_t raw_colors[4];
+
+// Load a palette of four colors into the raw_colors array and the colors array.
+void loadColorsFromPalette(palette_color_t * palette)
+{
+    int i = 0;
+    for (i = 0; i < 4; i++) {
+        raw_colors[i] = palette[i];
+        colors[i][0] = raw_colors[i] & UINT5_MAX;
+        colors[i][1] = (raw_colors[i] >> 5) & UINT5_MAX;
+        colors[i][2] = (raw_colors[i] >> 10) & UINT5_MAX;
+    }
+}
+
 // Wait some number of frames.
 void wait(uint8_t frames)
 {
@@ -198,16 +220,6 @@ void main()
     static const uint8_t const decimal_loc_x[] = {3, 13, 3, 13};
     static const uint8_t const decimal_loc_y[] = {3, 3, 12, 12};
 
-    static palette_color_t raw_colors[4];
-
-    // Set default colors
-    static uint5_t colors[4][3] = {
-        {UINT5_MAX, UINT5_MAX, UINT5_MAX}, // white
-        {UINT5_MAX, UINT5_MIN, UINT5_MIN}, // red
-        {UINT5_MIN, UINT5_MAX, UINT5_MIN}, // green
-        {UINT5_MIN, UINT5_MIN, UINT5_MAX}  // blue
-    };
-
     static uint8_t selected_color, selected_component;
     static uint8_t new_buttons, old_buttons;
     static bool color_changed_selected = true;
@@ -255,12 +267,7 @@ void main()
     ENABLE_RAM;
     if (sram[0] != 0xffff) {
         // If so load the intial palette from the save.
-        for (i = 0; i < 4; i++) {
-            raw_colors[i] = sram[i];
-            colors[i][0] = raw_colors[i] & UINT5_MAX;
-            colors[i][1] = (raw_colors[i] >> 5) & UINT5_MAX;
-            colors[i][2] = (raw_colors[i] >> 10) & UINT5_MAX;
-        }
+        loadColorsFromPalette(sram);
     }
     DISABLE_RAM;
 
