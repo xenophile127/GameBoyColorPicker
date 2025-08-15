@@ -261,15 +261,6 @@ void main()
             colors[i][1] = (raw_colors[i] >> 5) & UINT5_MAX;
             colors[i][2] = (raw_colors[i] >> 10) & UINT5_MAX;
         }
-        // Init the SGB palette packets.
-        sgb_pal01[3] = raw_colors[0] & 0xff;
-        sgb_pal01[4] = (raw_colors[0] >> 8) & 0xff;
-        sgb_pal01[9] = raw_colors[1] & 0xff;
-        sgb_pal01[10] = (raw_colors[1] >> 8) & 0xff;
-        sgb_pal23[3] = raw_colors[2] & 0xff;
-        sgb_pal23[4] = (raw_colors[2] >> 8) & 0xff;
-        sgb_pal23[9] = raw_colors[3] & 0xff;
-        sgb_pal23[10] = (raw_colors[3] >> 8) & 0xff;
     }
     DISABLE_RAM;
 
