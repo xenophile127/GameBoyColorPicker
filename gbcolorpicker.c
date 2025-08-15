@@ -404,8 +404,10 @@ void main()
                 if (sram[i] != raw_colors[i]) {
                     color_changed_all = true;
                     color_changed_selected = true;
-                    loadColorsFromPalette(sram);
                 }
+            }
+            if (color_changed_all) {
+                loadColorsFromPalette(sram);
             }
             DISABLE_RAM;
         } while (!(new_buttons || old_buttons || color_changed_all));
