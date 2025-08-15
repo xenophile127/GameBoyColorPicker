@@ -13,6 +13,7 @@ CFLAGS += -Wm-ya1       # 8KiB of SRAM.
 CFLAGS += -Wm-yc        # Game Boy Color support.
 CFLAGS += -Wm-ys        # Super Game Boy support.
 CFLAGS += -Wl-j -Wm-yS  # Generate a .sym file with labels in a format commonly supported by emulators.
+CFLAGS += -Wf--Werror   # Otherwise warnings might be missed during compilation.
 CFLAGS += -Wf--max-allocs-per-node50000  # Recommended setting, but does slow down compilation considerably.
 
 BINS	    = $(PROJECTNAME).gb
