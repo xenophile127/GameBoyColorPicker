@@ -210,7 +210,8 @@ void main()
 
     static uint8_t selected_color, selected_component;
     static uint8_t new_buttons, old_buttons;
-    static bool color_changed = false;
+    static bool color_changed_selected = true;
+    static bool color_changed_all = true;
     static uint8_t i, j;
     static uint8_t *p;
 
@@ -285,20 +286,16 @@ void main()
 
     // Initialize color areas. Each quadrant of the screen gets a different palette.
     if (sgb) {
-        // Initial color values are baked into the sgb_pal data.
-        sgb_transfer(sgb_pal01);
-        sgb_transfer(sgb_pal23);
+        // Draw the Super Game Boy attribute rectangles.
         sgb_transfer(sgb_attr_blk);
     } else {
+        // Setup the Game Boy Color tile attribute rectangles.
         VBK_REG = 1;
         fill_rect( 0, 0, 10, 9, PALETTE_COLOR_1);
         fill_rect(10, 0, 10, 9, PALETTE_COLOR_2);
         fill_rect( 0, 9, 10, 9, PALETTE_COLOR_3);
         fill_rect(10, 9, 10, 9, PALETTE_COLOR_4);
         VBK_REG = 0;
-        for (i = 0; i < 4; i++) {
-            set_bkg_palette_entry(PALETTE_COLOR_1 + i, 1, RGB(colors[i][0], colors[i][1], colors[i][2]));
-        }
     }
 
     // Fill everything with the tile that will show the selected colors.
@@ -336,7 +333,7 @@ void main()
             }
         }
 
-        if (color_changed) {
+        if (color_changed_selected || color_changed_all) {
             // Save the colors to SRAM so the .sav file can be used to import a palette.
             ENABLE_RAM;
             for (i = 0; i < 4; i++) {
@@ -354,25 +351,36 @@ void main()
                 sgb_pal23[9] = raw_colors[3] & 0xff;
                 sgb_pal23[10] = (raw_colors[3] >> 8) & 0xff;
 
-                if (selected_color <= 1) {
+                // Super Game Boy transfers are slow so only update what has changed.
+                if ((selected_color <= 1) || color_changed_all) {
                     sgb_transfer(sgb_pal01);
-                } else {
+                }
+                if ((selected_color >= 2) || color_changed_all) {
                     sgb_transfer(sgb_pal23);
                 }
             } else {
-            // Set the newly calculated color into the second entry of a palette. Each selected color gets its own palette.
-            // Using the second entry because of SGB transparency.
-                set_bkg_palette_entry(PALETTE_COLOR_1 + selected_color, 1, raw_colors[selected_color]);
+                // Each of the four colors gets its own palette.
+                if (color_changed_all) {
+                    set_bkg_palette_entry(PALETTE_COLOR_1, 1, raw_colors[0]);
+                    set_bkg_palette_entry(PALETTE_COLOR_2, 1, raw_colors[1]);
+                    set_bkg_palette_entry(PALETTE_COLOR_3, 1, raw_colors[2]);
+                    set_bkg_palette_entry(PALETTE_COLOR_4, 1, raw_colors[3]);
+                } else {
+                    // Set the newly calculated color into the second entry of a palette.
+                    // Using the second entry because of SGB transparency.
+                    set_bkg_palette_entry(PALETTE_COLOR_1 + selected_color, 1, raw_colors[selected_color]);
+                }
             }
         }
 
         // A repeat delay
         // SGB is slow enough to change colors as it is.
-        if (!sgb || !color_changed) {
+        if (!sgb || !color_changed_selected) {
             wait(1);
         }
 
-        color_changed = false;
+        color_changed_selected = false;
+        color_changed_all = false;
 
         // Add an initial delay before repeat when a button is newly pressed so you can make precise changes
         if (old_buttons != new_buttons) {
@@ -452,7 +460,7 @@ void main()
                 colors[selected_color][selected_component] += 1;
                 // Set the backup component.
                 backup_component = colors[selected_color][selected_component];
-                color_changed = true;
+                color_changed_selected = true;
             }
             break;
 
@@ -462,7 +470,7 @@ void main()
                 colors[selected_color][selected_component] -= 1;
                 // Set the backup component.
                 backup_component = colors[selected_color][selected_component];
-                color_changed = true;
+                color_changed_selected = true;
             }
             break;
 
@@ -472,7 +480,7 @@ void main()
             } else {
                 colors[selected_color][selected_component] = UINT5_MAX;
             }
-            color_changed = true;
+            color_changed_selected = true;
             break;
 
             case J_B:
@@ -481,7 +489,7 @@ void main()
             } else {
                 colors[selected_color][selected_component] = UINT5_MIN;
             }
-            color_changed = true;
+            color_changed_selected = true;
             break;
 
             case J_SELECT:
