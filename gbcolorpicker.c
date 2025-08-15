@@ -201,7 +201,7 @@ void main()
     static palette_color_t raw_colors[4];
 
     // Set default colors
-    static uint5_t colors[][] = {
+    static uint5_t colors[4][3] = {
         {UINT5_MAX, UINT5_MAX, UINT5_MAX}, // white
         {UINT5_MAX, UINT5_MIN, UINT5_MIN}, // red
         {UINT5_MIN, UINT5_MAX, UINT5_MIN}, // green
