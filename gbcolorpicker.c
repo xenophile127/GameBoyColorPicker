@@ -393,10 +393,22 @@ void main()
             }
         }
 
+        // Wait until something happens.
         do {
             wait(1);
             new_buttons = joypad();
-        } while (!(new_buttons || old_buttons));
+            // Check if SRAM has changed and if so, reload.
+            // This is useful in an emulator for pasting palettes into memory directly.
+            ENABLE_RAM;
+            for (i = 0; i < 4; i++) {
+                if (sram[i] != raw_colors[i]) {
+                    color_changed_all = true;
+                    color_changed_selected = true;
+                    loadColorsFromPalette(sram);
+                }
+            }
+            DISABLE_RAM;
+        } while (!(new_buttons || old_buttons || color_changed_all));
 
         // D-pad is pressed. Update.
         switch (new_buttons) {
