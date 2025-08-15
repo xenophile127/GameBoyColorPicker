@@ -8,12 +8,12 @@ PROJECTNAME    = GBColorPicker
 CC = $(GBDK_HOME)bin/lcc
 
 # CLFAGS options:
-# -yt3: MBC1+RAM+BATTERY. MBC1 chosen for SRAM support and small size of SRAM (because only 8 bytes are needed).
-# -ya1: 8KiB of SRAM.
-# -yc: Game Boy Color support.
-# -ys: Super Game Boy support.
-# --max-allocs-per-node50000: Recommended setting, but does slow down compilation considerably.
-CFLAGS = -Wm-yt3 -Wm-ya1 -Wm-yc -Wm-ys -Wf--max-allocs-per-node50000
+CFLAGS += -Wm-yt3       # MBC1+RAM+BATTERY. MBC1 chosen for small size of SRAM (because only 8 bytes are needed).
+CFLAGS += -Wm-ya1       # 8KiB of SRAM.
+CFLAGS += -Wm-yc        # Game Boy Color support.
+CFLAGS += -Wm-ys        # Super Game Boy support.
+CFLAGS += -Wl-j -Wm-yS  # Generate a .sym file with labels in a format commonly supported by emulators.
+CFLAGS += -Wf--max-allocs-per-node50000  # Recommended setting, but does slow down compilation considerably.
 
 BINS	    = $(PROJECTNAME).gb
 CSOURCES   := $(wildcard *.c)
