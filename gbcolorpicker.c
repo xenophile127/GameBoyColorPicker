@@ -28,8 +28,9 @@ typedef uint8_t uint5_t;
 // Wait some number of frames.
 void wait(uint8_t frames)
 {
-    for (frames; frames != 0; --frames)
+    for (frames; frames != 0; --frames) {
         wait_vbl_done();
+    }
 }
 
 // Convert a hex digit to a tile number.
@@ -177,8 +178,10 @@ void main()
     static uint8_t sgb_pal23[] = {SGB_PAL_23 << 3 | 1, 0xff,0x7f, 0xe0,0x03, 0xff,0x7f, 0,0,  0,0x7c, 0xff,0x7f, 0,0, 0};
 
     // Super Game Boy color rectangles for the four quadrants of the screen.
-    static const uint8_t const sgb_attr_blk[] = {SGB_ATTR_BLK << 3 | 2, 3, 1,1, 10,0,19,8, 1,2, 0,9,9,17, 1,3,\
-                                                  10,9,19,17, 0,0,0,0,0,0,0,0,0,0,0,0};
+    static const uint8_t const sgb_attr_blk[] = {
+        SGB_ATTR_BLK << 3 | 2, 3, 1,1, 10,0,19,8, 1,2, 0,9,9,17, 1,3,\
+        10,9,19,17, 0,0,0,0,0,0,0,0,0,0,0,0
+    };
 
     // Font tiles are loaded in by GBDK. That is most of what is needed, but there are a few more to load.
     static const uint8_t const toptile_invert[] = {0xff, 0, 0xff, 0, 0xff, 0, 0xff, 0, 0xff, 0, 0xff, 0, 0xff, 0, 0xff, 0xff};
@@ -252,10 +255,10 @@ void main()
     if (sram[0] != 0xffff) {
         // If so load the intial palette from the save.
         for (i = 0; i < 4; i++) {
-             raw_colors[i] = sram[i];
-             colors[i][0] = raw_colors[i] & UINT5_MAX;
-             colors[i][1] = (raw_colors[i] >> 5) & UINT5_MAX;
-             colors[i][2] = (raw_colors[i] >> 10) & UINT5_MAX;
+            raw_colors[i] = sram[i];
+            colors[i][0] = raw_colors[i] & UINT5_MAX;
+            colors[i][1] = (raw_colors[i] >> 5) & UINT5_MAX;
+            colors[i][2] = (raw_colors[i] >> 10) & UINT5_MAX;
         }
         // Init the SGB palette packets.
         sgb_pal01[3] = raw_colors[0] & 0xff;
