@@ -184,7 +184,7 @@ inline void print_decimal(const uint8_t x, const uint8_t y, const uint8_t *p)
 void print_date()
 {
     gotoxy(5,16);
-    puts("2024-02-06");
+    puts("2025-08-15");
 }
 
 void main()
