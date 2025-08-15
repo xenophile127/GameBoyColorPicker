@@ -345,27 +345,15 @@ void main()
             DISABLE_RAM;
             // Change the display palette onscreen.
             if (sgb) {
-                switch (selected_color) {
-                    case 0:
-                    sgb_pal01[3] = raw_colors[0] & 0xff;
-                    sgb_pal01[4] = (raw_colors[0] >> 8) & 0xff;
-                    break;
+                sgb_pal01[3] = raw_colors[0] & 0xff;
+                sgb_pal01[4] = (raw_colors[0] >> 8) & 0xff;
+                sgb_pal01[9] = raw_colors[1] & 0xff;
+                sgb_pal01[10] = (raw_colors[1] >> 8) & 0xff;
+                sgb_pal23[3] = raw_colors[2] & 0xff;
+                sgb_pal23[4] = (raw_colors[2] >> 8) & 0xff;
+                sgb_pal23[9] = raw_colors[3] & 0xff;
+                sgb_pal23[10] = (raw_colors[3] >> 8) & 0xff;
 
-                    case 1:
-                    sgb_pal01[9] = raw_colors[1] & 0xff;
-                    sgb_pal01[10] = (raw_colors[1] >> 8) & 0xff;
-                    break;
-
-                    case 2:
-                    sgb_pal23[3] = raw_colors[2] & 0xff;
-                    sgb_pal23[4] = (raw_colors[2] >> 8) & 0xff;
-                    break;
-
-                    case 3:
-                    sgb_pal23[9] = raw_colors[3] & 0xff;
-                    sgb_pal23[10] = (raw_colors[3] >> 8) & 0xff;
-                    break;
-                }
                 if (selected_color <= 1) {
                     sgb_transfer(sgb_pal01);
                 } else {
