@@ -1,4 +1,6 @@
 # Game Boy Color Picker
+![Game Boy Color Picker showing values in HTML color code hexidecimal](/docs/hex.png) ![Game Boy Color Picker showing values in decimal](/docs/decimal.png)
+
 A color picker that runs on Super Game Boy, Game Boy Color, and Game Boy Advance.
 
 Colors on the Game Boy Color (GBC), Game Boy Advance, and Super Game Boy (Super Nintendo) are very different from typical monitors, and even from each other. It can take a surprising amount of time just to find colors that look good when run on original hardware and in emulators that try to be accurate to hardware. There are PC tools to help approximate what colors will look like under various conditions, but they are no substitute for seeing your choices as they will really look.
