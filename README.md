@@ -12,6 +12,6 @@ Controls are:
 * B sets a component to the minimum, similar to A.
 * Select switches between HTML color code display and decimal display of colors.
 
-The selected palette is saved to SRAM so your `GBColorPicker.sav` file can be used by programs that read binary GBC palettes.
+The selected palette is saved to the beginning of SRAM so your `GBColorPicker.sav` file can be used by programs that read binary GBC palettes. The first eight bytes are also continuously checked against the active colors and reloaded if any difference is found so palettes can be pasted directly into an emulator's memory.
 
 Game Boy Color Picker is written in C and compiles with [GBDK](https://gbdk-2020.github.io/gbdk-2020/).
