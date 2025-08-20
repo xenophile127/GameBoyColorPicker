@@ -8,9 +8,12 @@ Game Boy Color Picker is a simple program that runs anywhere Game Boy games can 
 
 Controls are: Left and right move between the three components (red, green, and blue) of four different colors, and Up and Down change them with the effect immediately visible. Select switches between HTML color code display and decimal display of colors.
 
-The selected palette is saved to SRAM so your .sav file can be used by programs that read binary GBC palettes.
+The selected palette is saved to the beginning of SRAM so your `GBColorPicker.sav` file can be used by programs that read binary GBC palettes. The first eight bytes are also continuously checked against the active colors and reloaded if any difference is found so palettes can be pasted directly into an emulator's memory.
 
 Game Boy Color Picker is written in C and compiles with GBDK. Source code is available at https://github.com/xenophile127/GameBoyColorPicker
+
+Changes in 2025-08-15:
+* Palettes are reloaded if they are manually changed in an emulator's cartridge memory (SRAM).
 
 Changes in 2024-02-06:
 * The A and B buttons now toggle maximum and minimum component values and back.
